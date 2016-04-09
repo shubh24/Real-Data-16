@@ -2,7 +2,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
-
+import scipy
 
 directory = './inputTraining'
 for file in os.walk(directory):
@@ -35,11 +35,14 @@ for f in files:
 	image = [[] for i in range(rows)]
 	for i in range(rows):
 		for j in range(cols):
-			if (0.299*red_array[i][j] + 0.587*green_array[i][j] + 0.114*blue_array[i][j])>127:
-				image[i].append(255)
+			if (0.299*red_array[i][j] + 0.587*green_array[i][j] + 0.114*blue_array[i][j]) > 127:
+				image[i].append(1)
 			else:
 				image[i].append(0)
 
+	#image = scipy.misc.imresize(np.array(image), [30,60])
+	#rows = 30
+	#cols = 60
 
 	# plt.imshow(np.array(image), cmap="Greys_r")
 	# plt.show()
@@ -49,6 +52,7 @@ for f in files:
 	g = open(output_file_name, 'r')
 	captcha_value = g.read()
 
+	
 	iter_image = [[[] for j in range(rows)] for i in range(5)]
 
 	for iter in range(5):
@@ -72,8 +76,9 @@ for i in data:
 		for k in range(len(j)):
 			res[i][k] += j[k]
 		c += 1
-	for j in res[i]:
-		j = j/c
+	for j in range(len(res[i])):
+		res[i][j] = int(res[i][j]/c)
+
 import json
 with open('res_json.json','w') as fp:
 	json.dump(res, fp)
